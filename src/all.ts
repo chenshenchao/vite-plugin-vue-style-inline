@@ -11,16 +11,16 @@ export default function vitePluginVueStyleInline(): Plugin {
             bundle: OutputBundle,
             isWrite: boolean
         ) {
-            const buffer = Buffer.alloc(1024);
+            let buffer = '';
             for (const key in bundle) {
                 const chunk = bundle[key];
                 if (chunk.type === 'asset' && chunk.fileName.endsWith('.css')) {
-                    buffer.write(chunk.source as string);
+                    buffer += chunk.source as string;
                     delete bundle[key];
                 }
             }
 
-            const styleCode = buffer.toString().trim();
+            const styleCode = buffer.trim();
             for (const key in bundle) {
                 const chunk = bundle[key];
                 if (
