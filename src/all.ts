@@ -20,7 +20,7 @@ export default function vitePluginVueStyleInline(): Plugin {
                 }
             }
 
-            const styleCode = buffer.trim();
+            const styleCode = JSON.stringify(buffer.trim());
             for (const key in bundle) {
                 const chunk = bundle[key];
                 if (
@@ -29,12 +29,10 @@ export default function vitePluginVueStyleInline(): Plugin {
                     !chunk.fileName.includes('polyfill')
                 ) {
                     const rawCode = chunk.code;
-                    chunk.code = `
-                    (function() {
+                    chunk.code = `(function() {
                         try {
                             var styleElement = document.createElement('style');
-                            styleElement.type = 'text/css';
-                            styleElement.innerText = '${styleCode}';
+                            styleElement.innerText = ${styleCode};
                             document.head.appendChild(styleElement);
                         } catch(e) {
                             console.error('vite-plugin-vue-style-inline', e);
